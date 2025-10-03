@@ -1,0 +1,10 @@
+{
+  "domain": "steam_tracker",
+  "name": "Steam Tracker",
+  "version": "0.5.0",
+  "documentation": "https://github.com/lefidelity/hacs-steam-tracker",
+  "issue_tracker": "https://github.com/lefidelity/hacs-steam-tracker/issues",
+  "dependencies": [],
+  "codeowners": ["@lefidelity"],
+  "requirements": []
+}

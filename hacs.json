@@ -1,0 +1,6 @@
+{
+  "name": "Steam Tracker",
+  "domain": "steam_tracker",
+  "country": "all",
+  "homeassistant": "2025.10.0"
+}
