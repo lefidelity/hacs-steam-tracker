@@ -85,6 +85,30 @@ Renaming the integration (e.g., `Mein Steam Game`) produces matching entity IDs 
 
 ---
 
+## Retrieve Your Steam Details
+
+You need two pieces of information before the integration can connect to Steam.
+
+### 1. SteamID64
+
+1. Open your Steam profile in a browser.
+2. Click the three-dot menu on the right and choose **Copy Page URL**.
+3. The long numeric value at the end of the URL is your SteamID64.
+
+![Steps to copy the Steam profile URL and extract the SteamID64.](docs/retrieve_steam_id.png)
+
+### 2. Steam Web API Key
+
+1. Visit [https://steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey).
+2. Enter any domain (for example `localhost`) in the **Domain Name** field.
+3. Accept the terms and click **Register** to generate your key.
+
+![Steam Web API key registration form with localhost as the domain.](docs/create_web_api_key.png)
+
+Keep both the SteamID64 and the API key handy—you will enter them during the integration setup.
+
+---
+
 ## Provided Sensors and Attributes
 
 ### `sensor.*_status`
