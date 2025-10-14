@@ -8,6 +8,8 @@
   "dependencies": [],
   "codeowners": ["@lefidelity"],
   "requirements": [],
+  "icon": "mdi:steam",
+  "logo": "custom_components/steam_tracker/logo.png",
   "integration_type": "service",
   "iot_class": "cloud_polling"
 }
