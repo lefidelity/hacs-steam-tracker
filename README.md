@@ -29,13 +29,13 @@ _Add the sensors to Lovelace (Mushroom or stock cards) for a neat dashboard._
 3. Search for **Steam Tracker** in HACS and **Install**
 4. **Restart Home Assistant**
 
-> Screenshot placeholder: `docs/screenshot-hacs-add-repo.png`
+> Screenshot placeholder: docs/screenshot-hacs-add-repo.png
 
 ### Option B: Manual
-1. Copy the folder `custom_components/steam_tracker` into your Home Assistant config:
-   ```
+1. Copy the folder custom_components/steam_tracker into your Home Assistant config:
+   `
    config/custom_components/steam_tracker
-   ```
+   `
 2. **Restart Home Assistant**
 
 ---
@@ -50,118 +50,126 @@ Configure everything directly in the Home Assistant UI:
 
 That's it—the integration creates all entities automatically with a prefix based on the name you provide.
 
-> Already using `configuration.yaml`? Leave the YAML block in place for the first restart so Home Assistant can import it into the UI. Afterwards you can remove it.
+> Already using configuration.yaml? Leave the YAML block in place for the first restart so Home Assistant can import it into the UI. Afterwards you can remove it.
 
 ### Legacy YAML (optional)
 
-```yaml
+`yaml
 sensor:
   - platform: steam_tracker
     api_key: !secret steam_api_key
     steam_id: "7656119XXXXXXXXXX"
     name: "Steam Tracker"
-```
+`
+
+> Screenshot placeholder: docs/screenshot-steam-key-and-id.png
 
 ### Entity IDs
 
-Home Assistant converts the integration name into a slug. With the default `Steam Tracker` you get:
+Home Assistant converts the integration name into a slug. With the default Steam Tracker you get:
 
-- `sensor.steam_tracker_status`
-- `sensor.steam_tracker_game`
-- `sensor.steam_tracker_playtime`
-- `sensor.steam_tracker_profile`
-- `sensor.steam_tracker_recent`
-- `sensor.steam_tracker_recent_achievements`
-- `sensor.steam_tracker_global_stats`
-- `sensor.steam_tracker_friends`
+- sensor.steam_tracker_status
+- sensor.steam_tracker_game
+- sensor.steam_tracker_playtime
+- sensor.steam_tracker_profile
+- sensor.steam_tracker_recent
+- sensor.steam_tracker_recent_achievements
+- sensor.steam_tracker_global_stats
+- sensor.steam_tracker_friends
 
-If you choose `Mein Steam Game` as the integration name, you'll see entities like `sensor.mein_steam_game_playtime`, `sensor.mein_steam_game_game`, and so on.
+If you choose Mein Steam Game as the integration name, you'll see entities like sensor.mein_steam_game_playtime, sensor.mein_steam_game_game, and so on.
 
 ---
 
 ## Provided Sensors and Attributes
 
-### `sensor.*_status`
-**State**: `Offline | Online | Busy | Away | Snooze | Looking to trade | Looking to play | Unknown`
+### sensor.*_status
+**State**: Offline | Online | Busy | Away | Snooze | Looking to trade | Looking to play | Unknown
 
 **Attributes**:
-- `personaname`
-- `profileurl`
-- `avatar`
-- `lastlogoff`
+- personaname
+- profileurl
+- vatar
+- lastlogoff
 
-### `sensor.*_game`
-Shows the **current game** (or `none`).
+### sensor.*_game
+Shows the **current game** (or 
+one).
 
 **Attributes**:
-- `gameid` (appid)
-- `name`
-- `personaname`
-- `logo` (Steam header image)
-- `total_playtime_hours` (fetched directly via `GetOwnedGames`)
+- gameid (appid)
+- 
+ame
+- personaname
+- logo (Steam header image)
+- 	otal_playtime_hours (fetched directly via GetOwnedGames)
 
-### `sensor.*_playtime`
+### sensor.*_playtime
 **State**: total hours played (all games).
 
 **Attributes**:
-- `top_5_games`: list with `appid`, `name`, `hours`, `logo`, `achievements_unlocked`, `achievements_total`, `achievements_percent`
-- `all_games`: list of `{ name, hours }`
-- `game_count`
-- `total_playtime_hours`
-- `top_5_playtime_hours`
-- `playtime_by_gameid` (dictionary: `appid -> hours`)
-- `pile_of_shame_count` (games < 60 minutes)
+- 	op_5_games: list with ppid, 
+ame, hours, logo, chievements_unlocked, chievements_total, chievements_percent
+- ll_games: list of { name, hours }
+- game_count
+- 	otal_playtime_hours
+- 	op_5_playtime_hours
+- playtime_by_gameid (dictionary: ppid -> hours)
+- pile_of_shame_count (games < 60 minutes)
 
-### `sensor.*_profile`
+### sensor.*_profile
 **State**: Steam player level.
 
 **Attributes**:
-- `player_xp`
-- `player_xp_needed_to_level_up`
-- `player_xp_needed_current_level`
+- player_xp
+- player_xp_needed_to_level_up
+- player_xp_needed_current_level
 
-### `sensor.*_recent`
+### sensor.*_recent
 Recently played games (up to 5).
 
-**State**: name of the most recent game, or `none`.
+**State**: name of the most recent game, or 
+one.
 
 **Attributes**:
-- `recent_games`: list with `appid`, `name`, `playtime_2weeks_h`, `playtime_total_h`, `logo`, `last_played`
-- `game_count`
+- ecent_games: list with ppid, 
+ame, playtime_2weeks_h, playtime_total_h, logo, last_played
+- game_count
 
-### `sensor.*_recent_achievements`
+### sensor.*_recent_achievements
 **State**: number of games with data.
 
 **Attributes**:
-- `recent_achievements`: list with `appid`, `name`, `unlocked`, `total`, `percent`, `logo`
+- ecent_achievements: list with ppid, 
+ame, unlocked, 	otal, percent, logo
 
-### `sensor.*_global_stats`
+### sensor.*_global_stats
 **State**: total unlocked achievements (sum).
 
 **Attributes**:
-- `achievements_total`
-- `achievements_possible`
-- `perfect_games`
-- `avg_completion_rate` (average across games with achievements)
-- `badge_count`
-- `card_badge_count`
+- chievements_total
+- chievements_possible
+- perfect_games
+- vg_completion_rate (average across games with achievements)
+- adge_count
+- card_badge_count
 
-### `sensor.*_friends`
+### sensor.*_friends
 **State**: total number of friends.
 
 **Attributes**:
-- `friends`: list with `steamid`, `personaname`, `avatar`, `profileurl`, `status`, `game`
+- riends: list with steamid, personaname, vatar, profileurl, status, game
 
 ---
 
 ## Lovelace Examples
 
-> Screenshot placeholders: `docs/screenshot-overview.png`, `docs/screenshot-top5.png`, `docs/screenshot-recent.png`, `docs/screenshot-friends.png`
+> Screenshot placeholders: docs/screenshot-overview.png, docs/screenshot-top5.png, docs/screenshot-recent.png, docs/screenshot-friends.png
 
 ### Top-5 (Mushroom Template Card)
 Requires [Mushroom] installed via HACS.
 
-```yaml
+`yaml
 type: custom:mushroom-template-card
 primary: >
   {{ state_attr('sensor.steam_tracker_playtime', 'top_5_games')[0]['name'] }}
@@ -171,10 +179,10 @@ secondary: >
   ({{ state_attr('sensor.steam_tracker_playtime', 'top_5_games')[0]['achievements_percent'] }}%)
 entity: sensor.steam_tracker_playtime
 icon: mdi:steam
-```
+`
 
 ### Recent Games (Entity List)
-```yaml
+`yaml
 type: custom:auto-entities
 card:
   type: entities
@@ -184,10 +192,10 @@ filter:
     {% for game in state_attr('sensor.steam_tracker_recent', 'recent_games') %}
       {{ {'entity': 'sensor.steam_tracker_recent', 'attribute': 'recent_games', 'index': loop.index0, 'name': game.name} | tojson }}
     {% endfor %}
-```
+`
 
 ### Raw Attribute Table
-```yaml
+`yaml
 type: entities
 title: Steam Tracker (raw)
 entities:
@@ -197,10 +205,10 @@ entities:
   - entity: sensor.steam_tracker_recent
     attribute: recent_games
     name: Games (last 2 weeks)
-```
+`
 
 ### Last Played (formatted)
-```yaml
+`yaml
 type: markdown
 content: >
   {% set games = state_attr('sensor.steam_tracker_recent', 'recent_games') %}
@@ -210,10 +218,10 @@ content: >
   {% else %}
   _No recent games_
   {% endif %}
-```
+`
 
 ### Current Game (with total hours)
-```yaml
+`yaml
 type: entities
 title: Now Playing
 entities:
@@ -223,7 +231,7 @@ entities:
     entity: sensor.steam_tracker_game
     attribute: total_playtime_hours
     name: Total hours (this game)
-```
+`
 
 ---
 
@@ -236,37 +244,37 @@ entities:
 - Global stats: every **5 hours**
 - Friends: every **5 minutes**
 
-*(Each sensor defines `SCAN_INTERVAL` individually.)*
+*(Each sensor defines SCAN_INTERVAL individually.)*
 
 ---
 
 ## Local Testing
 
-1. Copy `custom_components/steam_tracker` to your Home Assistant config at:
-   ```
+1. Copy custom_components/steam_tracker to your Home Assistant config at:
+   `
    config/custom_components/steam_tracker
-   ```
+   `
 2. Restart Home Assistant.
 3. Go to **Settings → Devices & Services → Add Integration** and pick **Steam Tracker**.
 4. Enter your Steam credentials when prompted and verify the new sensors under **Developer Tools → States**.
 
-> Screenshot placeholder: `docs/screenshot-ha-states.png`
+> Screenshot placeholder: docs/screenshot-ha-states.png
 
 ---
 
 ## Troubleshooting
 
-- **No playtime on `sensor.*_game`** – Ensure you're actually in-game; playtime is fetched via `GetOwnedGames` by `appid`.
-- **`last_played` looks like a number** – That's expected: it is a Unix timestamp. Use a template (see Last Played example) for formatting.
-- **Rate limits / intermittent data** – Steam APIs can throttle or return partial data.
+- **No playtime on sensor.*_game** – Ensure you're actually in-game; playtime is fetched via GetOwnedGames by ppid.
+- **last_played looks like a number** – That's expected: it is a Unix timestamp. Use a template (see Last Played example) for formatting.
+- **Rate limits or intermittent data** – Steam APIs can throttle or return partial data.
 - **Unexpected entity IDs** – Check **Developer Tools → States** for the actual entity id.
 - **Verbose logging**:
-  ```yaml
+  `yaml
   logger:
     default: warning
     logs:
       custom_components.steam_tracker: debug
-  ```
+  `
 
 ---
 
@@ -293,7 +301,7 @@ entities:
 PRs and issues are welcome! Please include:
 - Reproduction steps
 - Home Assistant version
-- Logs (with `custom_components.steam_tracker: debug`)
+- Logs (with custom_components.steam_tracker: debug)
 - Expected vs. actual behavior
 
 ---
@@ -308,6 +316,6 @@ MIT
 
 **0.1.0**
 - Initial release
-- `Game` sensor fetches **total_playtime_hours** directly via API
+- Game sensor fetches **total_playtime_hours** directly via API
 - Top-5 games include achievements X/Y (Z%)
-- Recently played exposes `last_played` (Unix timestamp)
+- Recently played exposes last_played (Unix timestamp)

@@ -1,19 +1,23 @@
-# Integration to get steam account information 
+"""Integration to get Steam account information."""
+
+from __future__ import annotations
+
 import logging
+from datetime import timedelta
+
 import requests
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_API_KEY, CONF_NAME
+from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
-from homeassistant.helpers.entity import Entity
-from datetime import timedelta
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+
+from .const import CONF_STEAM_ID, DEFAULT_NAME
 
 _LOGGER = logging.getLogger(__name__)
-
-CONF_STEAM_ID = "steam_id"
-
-DEFAULT_NAME = "Steam Tracker"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -26,40 +30,63 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 API_URL = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/"
 
 
-def setup_platform(hass, config, add_entities, discovery_info=None):
-    """Set up Steam Tracker sensors."""
+def _create_entities(api_key: str, steam_id: str, name: str) -> list["SteamBaseSensor"]:
+    """Create all Steam Tracker sensor entities."""
+    base_name = name or DEFAULT_NAME
+    return [
+        SteamStatusSensor(api_key, steam_id, f"{base_name} Status"),
+        SteamGameSensor(api_key, steam_id, f"{base_name} Game"),
+        SteamPlaytimeSensor(api_key, steam_id, f"{base_name} Playtime"),
+        SteamProfileSensor(api_key, steam_id, f"{base_name} Profile"),
+        SteamRecentGamesSensor(api_key, steam_id, f"{base_name} Recent"),
+        SteamRecentAchievementsSensor(api_key, steam_id, f"{base_name} Recent Achievements"),
+        SteamGlobalStatsSensor(api_key, steam_id, f"{base_name} Global Stats"),
+        SteamFriendsSensor(api_key, steam_id, f"{base_name} Friends"),
+    ]
+
+
+def setup_platform(
+    hass: HomeAssistant,
+    config: ConfigType,
+    add_entities,
+    discovery_info: DiscoveryInfoType | None = None,
+) -> None:
+    """Set up Steam Tracker sensors from YAML."""
     api_key = config[CONF_API_KEY]
     steam_id = config[CONF_STEAM_ID]
-    name = config[CONF_NAME]
+    name = config.get(CONF_NAME, DEFAULT_NAME)
 
-    add_entities([
-        SteamStatusSensor(api_key, steam_id, f"{name} Status"),
-        SteamGameSensor(api_key, steam_id, f"{name} Game"),
-        SteamPlaytimeSensor(api_key, steam_id, f"{name} Playtime"),
-        SteamProfileSensor(api_key, steam_id, f"{name} Profile"),
-        SteamRecentGamesSensor(api_key, steam_id, f"{name} Recent"),
-        SteamRecentAchievementsSensor(api_key, steam_id, f"{name} Recent Achievements"),
-        SteamGlobalStatsSensor(api_key, steam_id, f"{name} Global Stats"),
-        SteamFriendsSensor(api_key, steam_id, f"{name} Friends"),
-    ])
+    add_entities(_create_entities(api_key, steam_id, name))
 
 
-class SteamBaseSensor(Entity):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities,
+) -> None:
+    """Set up Steam Tracker sensors from a config entry."""
+    data = entry.data
+    name = entry.title or data.get(CONF_NAME, DEFAULT_NAME)
+    entities = _create_entities(data[CONF_API_KEY], data[CONF_STEAM_ID], name)
+    async_add_entities(entities)
+
+
+class SteamBaseSensor(SensorEntity):
     """Base class for Steam Tracker sensors."""
 
-    def __init__(self, api_key, steam_id, name):
+    sensor_type = "base"
+
+    def __init__(self, api_key: str, steam_id: str, name: str) -> None:
         self._api_key = api_key
         self._steam_id = steam_id
-        self._name = name
+        self._attr_name = name
+        self._attr_should_poll = True
+        self._attr_unique_id = f"{steam_id}_{self.sensor_type}"
         self._state = None
         self._attrs = {}
 
     @property
-    def name(self):
-        return self._name
-
-    @property
-    def state(self):
+    def native_value(self):
         return self._state
 
     @property
@@ -80,6 +107,8 @@ class SteamBaseSensor(Entity):
 
 class SteamStatusSensor(SteamBaseSensor):
     """Shows online status of the player."""
+
+    sensor_type = "status"
     SCAN_INTERVAL = timedelta(minutes=1)
     
     def parse_data(self, data):
@@ -103,6 +132,8 @@ class SteamStatusSensor(SteamBaseSensor):
 
 class SteamGameSensor(SteamBaseSensor):
     """Shows current game being played."""
+
+    sensor_type = "game"
     SCAN_INTERVAL = timedelta(minutes=5)
     
     def parse_data(self, data):
@@ -147,6 +178,8 @@ API_OWNED_GAMES = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/
 
 class SteamPlaytimeSensor(SteamBaseSensor):
     """Shows total playtime and top 5 games."""
+
+    sensor_type = "playtime"
     SCAN_INTERVAL = timedelta(hours=3)
 
     def update(self):
@@ -262,7 +295,8 @@ API_BADGES = "https://api.steampowered.com/IPlayerService/GetBadges/v1/"
 
 class SteamProfileSensor(SteamBaseSensor):
     """Shows profile info like level and XP."""
-    
+
+    sensor_type = "profile"
     SCAN_INTERVAL = timedelta(hours=3)
     def update(self):
         try:
@@ -286,6 +320,8 @@ API_RECENT_GAMES = "https://api.steampowered.com/IPlayerService/GetRecentlyPlaye
 
 class SteamRecentGamesSensor(SteamBaseSensor):
     """Shows recently played games."""
+
+    sensor_type = "recent_games"
     SCAN_INTERVAL = timedelta(minutes=10)
     
     def update(self):
@@ -338,6 +374,8 @@ API_RECENT_GAMES = "https://api.steampowered.com/IPlayerService/GetRecentlyPlaye
 
 class SteamRecentAchievementsSensor(SteamBaseSensor):
     """Shows achievement progress for recently played games."""
+
+    sensor_type = "recent_achievements"
     SCAN_INTERVAL = timedelta(hours=3)
 
     def update(self):
@@ -401,13 +439,12 @@ class SteamRecentAchievementsSensor(SteamBaseSensor):
             self._attrs = {}
 
 
-API_COMMUNITY = "https://steamcommunity.com/profiles/{steamid}/?xml=1"
 API_BADGES = "https://api.steampowered.com/IPlayerService/GetBadges/v1/"
-
-import xml.etree.ElementTree as ET
 
 class SteamGlobalStatsSensor(SteamBaseSensor):
     """Shows global achievement stats (expensive: iterates over all games)."""
+
+    sensor_type = "global_stats"
     SCAN_INTERVAL = timedelta(hours=5)
     
     def update(self):
@@ -489,6 +526,8 @@ API_SUMMARIES = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v000
 
 class SteamFriendsSensor(SteamBaseSensor):
     """Shows Steam friends and their current status."""
+
+    sensor_type = "friends"
     SCAN_INTERVAL = timedelta(minutes=5)
 
     def update(self):
