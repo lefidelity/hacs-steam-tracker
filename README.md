@@ -95,7 +95,7 @@ You need two pieces of information before the integration can connect to Steam.
 2. Click the three-dot menu on the right and choose **Copy Page URL**.
 3. The long numeric value at the end of the URL is your SteamID64.
 
-![Steps to copy the Steam profile URL and extract the SteamID64.](docs/retrieve_steam_id.png)
+![Steps to copy the Steam profile URL and extract the SteamID64.](docs/images/retrieve_steam_id.png)
 
 ### 2. Steam Web API Key
 
@@ -103,9 +103,33 @@ You need two pieces of information before the integration can connect to Steam.
 2. Enter any domain (for example `localhost`) in the **Domain Name** field.
 3. Accept the terms and click **Register** to generate your key.
 
-![Steam Web API key registration form with localhost as the domain.](docs/create_web_api_key.png)
+![Steam Web API key registration form with localhost as the domain.](docs/images/create_web_api_key.png)
 
 Keep both the SteamID64 and the API key handy—you will enter them during the integration setup.
+
+---
+
+## Example Dashboard
+
+To get started quickly, the repository ships with two ready-to-use Lovelace dashboards:
+
+- German version: `docs/examples/steam_dashboard_de.yaml`
+- English version: `docs/examples/steam_dashboard_en.yaml`
+
+Open Home Assistant, go to your dashboard, click the three dots → **Edit dashboard** → three dots again → **Raw configuration editor**, and paste the contents of the desired YAML file. The easiest way to copy everything is to open the file on GitHub and use the **Raw** view.
+
+The example makes use of a few popular custom cards. Install them via HACS so the layout renders correctly:
+
+- [button-card](https://github.com/custom-cards/button-card)
+- [config-template-card](https://github.com/iantrich/config-template-card)
+- [entity-progress-card](https://github.com/t1m0thyj/entity-progress-card)
+- [bar-card](https://github.com/custom-cards/bar-card)
+- [flex-table-card](https://github.com/custom-cards/flex-table-card)
+- [card-mod](https://github.com/thomasloven/lovelace-card-mod)
+
+![Sample Steam dashboard built with the example configuration.](docs/examples/dashboard_example.jpg)
+
+Feel free to adapt the cards, colors, or layout to match your own setup.
 
 ---
 
