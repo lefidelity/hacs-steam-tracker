@@ -1,4 +1,4 @@
-card_modviews:
+views:
   - title: Steam
     sections:
       - type: grid
