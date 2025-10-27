@@ -28,7 +28,7 @@ Or click the badge below to open the repository page directly inside HACS:
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=lefidelity&repository=hacs-steam-tracker&category=integration)
 
-After installation, restart Home Assistant once to load the integration.
+After installation, restart Home Assistant to load the integration.
 
 ### HACS (Manual Repository)
 1. Open **HACS -> Integrations**.
@@ -46,6 +46,66 @@ After installation, restart Home Assistant once to load the integration.
 
 ---
 
+## Steam
+
+
+The **Steam ID** and the **Steam Web API key** information is needed while configuring the integration. You need this two pieces of information before the integration can connect to Steam.
+
+You also must **set some privacy settings** to get access to some informationen over the API.
+
+### Steam Privacy Settings
+
+To allow the **Steam Tracker** integration to retrieve your profile information, friends list, and playtime statistics, certain parts of your Steam account must be set to **Public**.  
+If your profile or specific data fields are private, the Steam API will not return the required information — resulting in missing or empty sensors in Home Assistant.
+
+#### Required privacy settings
+
+Make sure the following settings are set to **Public** in your Steam profile:
+
+| Setting | Required visibility | Purpose |
+|----------|---------------------|----------|
+| **My Profile** | Public | Allows the integration to access your general Steam user data (name, avatar, level, and last online time). |
+| **Game Details** | Public | Needed to display your owned games, playtime, achievements, and most recently played games. |
+| **Friends List** | Public | Required to show your Steam friends and their online status. |
+| **Inventory** *(optional)* | Public | Only needed if you want to track badges, cards, or inventory-based stats. |
+
+> ⚠️ **Note:** If your game details or friends list are private, the corresponding sensors will remain empty.
+
+#### How to change your Steam privacy settings
+
+1. Log in to your [Steam account](https://steamcommunity.com/).  
+2. Click on your **profile name** in the top menu and select **View my profile**.  
+3. Click **Edit Profile** → **Privacy Settings** (on the right-hand side).  
+4. Under **My Profile**, set the following options to **Public**:
+   - **My Profile** → Public  
+   - **Game Details** → Public  
+   - **Friends List** → Public  
+   - *(Optional)* **Inventory** → Public  
+5. Save your changes.
+
+Once these settings are updated, your profile data will be accessible through the Steam Web API, and all sensors in the **Steam Tracker** integration will populate correctly.
+
+
+### Your Steam ID (SteamID64)
+
+1. Open your Steam profile in a browser.
+2. Click on your profile name and then on **Account details** 
+3. Under the title for your Steam account you'll see your **Steam ID** (SteamID64).
+
+![Steps to copy the Steam profile URL and extract the SteamID64.](docs/images/retrieve_steam_id.png)
+
+### Steam Web API Key
+
+1. Visit [https://steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey).
+2. Enter any domain (for example `localhost`) in the **Domain Name** field. At the moment it doesn't matter what domain you choose.
+3. Accept the terms and click **Register** to generate your key.
+
+![Steam Web API key registration form with localhost as the domain.](docs/images/create_web_api_key.png)
+
+Keep both the SteamID64 and the API key handy—you will enter them during the integration configuration.
+
+---
+
 ## Configuration
 
 Everything can be configured in the UI:
@@ -54,7 +114,9 @@ Everything can be configured in the UI:
 2. Search for **Steam Tracker**.
 3. Provide your **Steam User ID**, **Steam Web API key**, and a friendly **integration name**.
 
-The integration creates sensors automatically with names based on the title you choose.
+> ⚠️ **Note:** If you want to use the examples out of the box use the default "Steam Tracker" as the friendly name.
+
+The integration creates sensors automatically with names based on the friendly name you choose. All examples will assume "Steam Tracker" as friendly name.
 
 Already using `configuration.yaml`? Leave your existing entry in place for the first restart so Home Assistant can import it into the UI, then remove the YAML.
 
@@ -67,6 +129,28 @@ sensor:
     steam_id: "7656119XXXXXXXXXX"
     name: "Steam Tracker"
 ```
+
+---
+
+## Examples
+
+To get started quickly, the repository ships with two ready-to-use Lovelace dashboards and some Lovelace cards ready to use (if you use "Steam Tracker" as the integrations friendly name).
+
+### Dashboards
+- German version: `docs/examples/steam_dashboard_de.yaml`
+- English version: `docs/examples/steam_dashboard_en.yaml`
+
+[Documentation for the example dashboards](./docs/examples/extended%20dashboard/README.md)
+
+### Lovelace cards
+
+If you have used the default "Steam Tracker" as integrations friendly name you can copy and paste the YAML codes. For some cards additional integrations are needed (and are mentioned). Headlines or descriptive text (as seen in the example dashboards) are not provided with this examples.
+
+- [Example Lovelace cards - German version](./docs/examples/cards/README_de.md)
+- [Example Lovelace cards - English version](./docs/examples/cards/README_en.md)
+
+
+## Provided Entities, Sensors and Attributes
 
 ### Entity IDs
 
@@ -81,59 +165,9 @@ Home Assistant slugifies the integration name. With the default `Steam Tracker` 
 - `sensor.steam_tracker_global_stats`
 - `sensor.steam_tracker_friends`
 
-Renaming the integration (e.g., `Mein Steam Game`) produces matching entity IDs such as `sensor.mein_steam_game_game`.
+Renaming the integration (e.g., `My Steam Information`) produces matching entity IDs such as `sensor.my_steam_information_game`.
 
----
-
-## Retrieve Your Steam Details
-
-You need two pieces of information before the integration can connect to Steam.
-
-### 1. SteamID64
-
-1. Open your Steam profile in a browser.
-2. Click the three-dot menu on the right and choose **Copy Page URL**.
-3. The long numeric value at the end of the URL is your SteamID64.
-
-![Steps to copy the Steam profile URL and extract the SteamID64.](docs/images/retrieve_steam_id.png)
-
-### 2. Steam Web API Key
-
-1. Visit [https://steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey).
-2. Enter any domain (for example `localhost`) in the **Domain Name** field.
-3. Accept the terms and click **Register** to generate your key.
-
-![Steam Web API key registration form with localhost as the domain.](docs/images/create_web_api_key.png)
-
-Keep both the SteamID64 and the API key handy—you will enter them during the integration setup.
-
----
-
-## Example Dashboard
-
-To get started quickly, the repository ships with two ready-to-use Lovelace dashboards:
-
-- German version: `docs/examples/steam_dashboard_de.yaml`
-- English version: `docs/examples/steam_dashboard_en.yaml`
-
-Open Home Assistant, go to your dashboard, click the three dots → **Edit dashboard** → three dots again → **Raw configuration editor**, and paste the contents of the desired YAML file. The easiest way to copy everything is to open the file on GitHub and use the **Raw** view.
-
-The example makes use of a few popular custom cards. Install them via HACS so the layout renders correctly:
-
-- [button-card](https://github.com/custom-cards/button-card)
-- [config-template-card](https://github.com/iantrich/config-template-card)
-- [entity-progress-card](https://github.com/t1m0thyj/entity-progress-card)
-- [bar-card](https://github.com/custom-cards/bar-card)
-- [flex-table-card](https://github.com/custom-cards/flex-table-card)
-- [card-mod](https://github.com/thomasloven/lovelace-card-mod)
-
-![Sample Steam dashboard built with the example configuration.](docs/examples/dashboard_example.jpg)
-
-Feel free to adapt the cards, colors, or layout to match your own setup.
-
----
-
-## Provided Sensors and Attributes
+### Sensors and Attributes
 
 ### `sensor.*_status`
 - **State**: `Offline | Online | Busy | Away | Snooze | Looking to trade | Looking to play | Unknown`
@@ -169,37 +203,9 @@ Feel free to adapt the cards, colors, or layout to match your own setup.
 
 ---
 
-## Lovelace Examples
-
-### Top-5 Games (Mushroom Template Card)
-```yaml
-type: custom:mushroom-template-card
-primary: >
-  {{ state_attr('sensor.steam_tracker_playtime', 'top_5_games')[0]['name'] }}
-secondary: >
-  {{ state_attr('sensor.steam_tracker_playtime', 'top_5_games')[0]['hours'] }} h
-  • {{ state_attr('sensor.steam_tracker_playtime', 'top_5_games')[0]['achievements_unlocked'] }}/{{ state_attr('sensor.steam_tracker_playtime', 'top_5_games')[0]['achievements_total'] }}
-  ({{ state_attr('sensor.steam_tracker_playtime', 'top_5_games')[0]['achievements_percent'] }}%)
-entity: sensor.steam_tracker_playtime
-icon: mdi:steam
-```
-
-### Recent Games (Markdown)
-```yaml
-type: markdown
-content: >
-  {% set games = state_attr('sensor.steam_tracker_recent', 'recent_games') %}
-  {% if games and games | count > 0 %}
-  **Last played:** {{ games[0]['name'] }}  
-  {{ as_datetime(games[0]['last_played']) | as_local | timestamp_custom('%Y-%m-%d %H:%M') }}
-  {% else %}
-  _No recent games_
-  {% endif %}
-```
-
----
-
 ## Update Intervals
+
+The update intervals can not be configured yet.
 
 - Status: 1 minute
 - Game: 5 minutes
@@ -209,30 +215,6 @@ content: >
 - Friends: 5 minutes
 
 Each sensor defines its own `SCAN_INTERVAL`.
-
----
-
-## Local Testing
-
-1. Copy `custom_components/steam_tracker` into your Home Assistant config.
-2. Restart Home Assistant.
-3. Add the integration via **Settings -> Devices & Services -> Add Integration**.
-4. Inspect the new sensors under **Developer Tools -> States**.
-
----
-
-## Troubleshooting
-
-- **No playtime on `sensor.*_game`**: make sure the account is currently in-game; data comes from `GetOwnedGames`.
-- **`last_played` looks numeric**: it is a Unix timestamp; use a template to format it.
-- **Unexpected entity IDs**: confirm the actual names in **Developer Tools -> States**.
-- **Verbose logging**:
-  ```yaml
-  logger:
-    default: warning
-    logs:
-      custom_components.steam_tracker: debug
-  ```
 
 ---
 
@@ -248,9 +230,7 @@ Each sensor defines its own `SCAN_INTERVAL`.
 
 - Options flow for scan interval tuning
 - Per-sensor enable/disable toggles
-- Game-specific icons or images
 - Additional translations
-- Automated tests and CI
 
 ---
 
